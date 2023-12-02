@@ -12,8 +12,8 @@ using register_m.Data;
 namespace register_m.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231201113014_addedKasutajad")]
-    partial class addedKasutajad
+    [Migration("20231202230957_AddedKasutajas")]
+    partial class AddedKasutajas
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,8 @@ namespace register_m.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeSpan>("Aeg")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("Aeg")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Isikukood")
                         .HasColumnType("int");
@@ -53,7 +53,7 @@ namespace register_m.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Kasutaja");
+                    b.ToTable("Kasutajas");
                 });
 #pragma warning restore 612, 618
         }

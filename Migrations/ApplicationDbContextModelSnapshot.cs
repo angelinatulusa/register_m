@@ -30,8 +30,8 @@ namespace register_m.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeSpan>("Aeg")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("Aeg")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Isikukood")
                         .HasColumnType("int");
@@ -50,7 +50,7 @@ namespace register_m.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Kasutaja");
+                    b.ToTable("Kasutajas");
                 });
 #pragma warning restore 612, 618
         }
