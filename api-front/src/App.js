@@ -3,17 +3,18 @@ import './App.css';
 
 function App() {
   const [kasutajad, setKasutajad] = useState([]);
-  const [isUsd, setUsd] = useState(false);
   const idRef = useRef();
   const nimiRef = useRef();
-  const aegRef = useRef();
-  const isActiveRef = useRef();
   const isikukoodRef = useRef();
+  const isActiveRef = useRef();
 
   useEffect(() => {
     fetch("https://localhost:7105/Kasutajad")
       .then(res => res.json())
-      .then(json => setKasutajad(json));
+      .then(json => setKasutajad(json.map(kasutaja => ({
+        ...kasutaja,
+        aeg: new Date(kasutaja.aeg).toLocaleString(), // Преобразуем в локальный формат времени
+      }))));
   }, []);
 
   function kustuta(index) {
@@ -42,12 +43,12 @@ function App() {
     const newKasutaja = {
       id: Number(idRef.current.value),
       nimi: nimiRef.current.value,
-      aeg: aegRef.current.value,
+      aeg: new Date().toLocaleString(), // Текущее время в локальном формате
       isActive: isActiveRef.current.checked,
       isikukood: Number(isikukoodRef.current.value),
     };
 
-    fetch("https://localhost:7105/Kasutajadlisa", {
+    fetch("https://localhost:7105/Kasutajad/lisa", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +56,12 @@ function App() {
       body: JSON.stringify(newKasutaja),
     })
       .then(res => res.json())
-      .then(json => setKasutajad(json))
+      .then(json => {
+        setKasutajad(prevKasutajad => [...prevKasutajad, {
+          ...json,
+          aeg: new Date(json.aeg).toLocaleString(), // Преобразуем в локальный формат времени
+        }]);
+      })
       .catch(error => {
         console.error("Viga kasutaja lisamisel:", error);
       });
@@ -63,39 +69,44 @@ function App() {
     // Очищаем поля формы
     idRef.current.value = "";
     nimiRef.current.value = "";
-    aegRef.current.value = "";
     isikukoodRef.current.value = "";
     isActiveRef.current.checked = false;
   }
 
   return (
     <div className="App">
-      <label>ID</label> <br />
-      <input ref={idRef} type="number" /> <br />
-      <label>Nimi</label> <br />
-      <input ref={nimiRef} type="text" /> <br />
-      <label>Aeg</label> <br />
-      <input ref={aegRef} type="text" /> <br />
-      <label>Isikukood</label> <br />
-      <input ref={isikukoodRef} type="number" /> <br />
-      <label>Aktiivne</label> <br />
-      <input ref={isActiveRef} type="checkbox" /> <br />
-      <button onClick={() => lisa()}>Lisa</button>
-      {kasutajad.map((kasutaja, index) => (
-        <div key={index}>
-          <table id="customers">
-            <tr>
+      <table id="customers">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nimi</th>
+            <th>Aeg</th>
+            <th>Töötajatekood</th>
+            <th>Just saabun/Juba lahkun</th>
+            <th>Tegevused</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input ref={idRef} type="number" /></td>
+            <td><input ref={nimiRef} type="text" /></td>
+            <td>{new Date().toLocaleString()}</td>
+            <td><input ref={isikukoodRef} type="text" /></td>
+            <td><input ref={isActiveRef} type="checkbox" /></td>
+            <td><button onClick={() => lisa()}>Lisa</button></td>
+          </tr>
+          {kasutajad.map((kasutaja, index) => (
+            <tr key={index}>
               <td>{kasutaja.id}</td>
               <td>{kasutaja.nimi}</td>
               <td>{kasutaja.aeg}</td>
               <td>{kasutaja.isikukood}</td>
-              <td>
-                <button onClick={() => kustuta(index)}>x</button>
-              </td>
+              <td>{kasutaja.aktiivne ? 'just saabun' : 'juba lahkun'}</td>
+              <td><button onClick={() => kustuta(index)}>Kustuta</button></td>
             </tr>
-          </table>
-        </div>
-      ))}
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

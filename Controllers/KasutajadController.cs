@@ -49,19 +49,20 @@ namespace register_m.Controllers
                 return BadRequest("Invalid request data.");
             }
 
-            // 1. Проверка наличия поля Nimi
             if (string.IsNullOrWhiteSpace(kasutajad.Nimi))
             {
                 return BadRequest("The Nimi field is required.");
             }
 
+            if (kasutajad.Aeg == default(DateTime))
+            {
+                return BadRequest("The Aeg field is required and must be a valid date.");
+            }
+
+            // Другие проверки по необходимости...
+
             try
             {
-                // 2. Решение проблемы с конвертацией JSON значения в Aeg
-                //    Удостоверьтесь, что формат даты соответствует ожидаемому формату в модели Kasutajad
-                //    Пример: "Aeg": "2023-12-01T12:34:56"
-                //    Вам может потребоваться использовать другие инструменты или атрибуты для управления форматом даты
-
                 await _context.Kasutaja.AddAsync(kasutajad);
                 await _context.SaveChangesAsync();
 
@@ -72,6 +73,7 @@ namespace register_m.Controllers
                 return BadRequest($"Error saving changes: {ex.Message}");
             }
         }
+
 
         [HttpDelete("kustuta/{id}")]
         public IActionResult Delete(int id)
