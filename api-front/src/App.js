@@ -3,10 +3,11 @@ import './App.css';
 
 function App() {
   const [kasutajad, setKasutajad] = useState([]);
+  const [error, setError] = useState(null);
   const idRef = useRef();
   const nimiRef = useRef();
   const isikukoodRef = useRef();
-  const isActiveRef = useRef();
+  const valikRef = useRef();
 
   useEffect(() => {
     fetch("https://localhost:7105/Kasutajad")
@@ -39,38 +40,43 @@ function App() {
     }
   }
 
-  function lisa() {
+  async function lisa() {
+    const nimi = nimiRef.current.value;
+    const isikukood = isikukoodRef.current.value;
+    const valik = valikRef.current.checked;
+    const aeg = new Date().toISOString();
+    
+    if (!nimi || !isikukood) {
+      console.error("Nimi and Isikukood are required.");
+      return;
+    }
+  
     const newKasutaja = {
-      id: Number(idRef.current.value),
-      nimi: nimiRef.current.value,
-      aeg: new Date().toLocaleString(), // Текущее время в локальном формате
-      isActive: isActiveRef.current.checked,
-      isikukood: Number(isikukoodRef.current.value),
+      nimi,
+      isikukood,
+      valik: valik.toString(),
+      aeg,
+      roll: "kasutaja",
     };
-
-    fetch("https://localhost:7105/Kasutajad/lisa", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newKasutaja),
-    })
-      .then(res => res.json())
-      .then(json => {
-        setKasutajad(prevKasutajad => [...prevKasutajad, {
-          ...json,
-          aeg: new Date(json.aeg).toLocaleString(), // Преобразуем в локальный формат времени
-        }]);
-      })
-      .catch(error => {
-        console.error("Viga kasutaja lisamisel:", error);
+  
+    try {
+      const response = await fetch("https://localhost:7105/Kasutajad/lisa", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newKasutaja),
       });
-
-    // Очищаем поля формы
-    idRef.current.value = "";
-    nimiRef.current.value = "";
-    isikukoodRef.current.value = "";
-    isActiveRef.current.checked = false;
+  
+      if (response.ok) {
+        console.log("Kasutaja edukalt lisatud");
+        window.location.reload(); // Перезагрузка страницы
+      } else {
+        console.error("Kasutaja lisamisel ilmnes viga");
+      }
+    } catch (error) {
+      console.error("Viga päringu tegemisel:", error);
+    }
   }
 
   return (
@@ -82,8 +88,6 @@ function App() {
             <th>Nimi</th>
             <th>Aeg</th>
             <th>Töötajatekood</th>
-            <th>Just saabun/Juba lahkun</th>
-            <th>Tegevused</th>
           </tr>
         </thead>
         <tbody>
@@ -92,8 +96,8 @@ function App() {
             <td><input ref={nimiRef} type="text" /></td>
             <td>{new Date().toLocaleString()}</td>
             <td><input ref={isikukoodRef} type="text" /></td>
-            <td><input ref={isActiveRef} type="checkbox" /></td>
-            <td><button onClick={() => lisa()}>Lisa</button></td>
+            <td><input ref={valikRef} type="checkbox" /></td>
+            <td><button onClick={lisa}>Lisa</button></td>
           </tr>
           {kasutajad.map((kasutaja, index) => (
             <tr key={index}>
@@ -101,7 +105,6 @@ function App() {
               <td>{kasutaja.nimi}</td>
               <td>{kasutaja.aeg}</td>
               <td>{kasutaja.isikukood}</td>
-              <td>{kasutaja.aktiivne ? 'just saabun' : 'juba lahkun'}</td>
               <td><button onClick={() => kustuta(index)}>Kustuta</button></td>
             </tr>
           ))}

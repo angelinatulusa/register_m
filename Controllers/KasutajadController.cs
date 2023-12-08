@@ -58,9 +58,11 @@ namespace register_m.Controllers
             {
                 return BadRequest("The Aeg field is required and must be a valid date.");
             }
-
-            // Другие проверки по необходимости...
-
+            if (string.IsNullOrWhiteSpace(kasutajad.Roll))
+            {
+                // Устанавливаем значение по умолчанию, если Roll не был предоставлен
+                kasutajad.Roll = "kasutaja";
+            }
             try
             {
                 await _context.Kasutaja.AddAsync(kasutajad);
