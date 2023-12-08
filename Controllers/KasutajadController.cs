@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using register_m.Data;
 using register_m.Models;
@@ -90,6 +91,18 @@ namespace register_m.Controllers
             _context.SaveChanges();
             return Ok();
         }
-    }
+        [HttpGet("checkAdmin")]
+        [AllowAnonymous] // Этот атрибут разрешает доступ даже без аутентификации
+        public IActionResult CheckAdmin([FromQuery] string name, [FromQuery] string code)
+        {
+            bool isAdmin = IsAdmin(name, code);
 
+            return Ok(new { isAdmin });
+        }
+
+        private bool IsAdmin(string name, string code)
+        {
+            return name == "admin" && code == "111";
+        }
+    }
 }

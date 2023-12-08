@@ -1,38 +1,87 @@
 .App {
-  text-align: center;
+  font-family: Arial, sans-serif;
+  padding: 20px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+th {
+  background-color: #f2f2f2;
+}
+
+input {
+  margin: 5px 0;
+}
+
+input, button {
+  margin: 5px 0;
+}
+
+#kustuta {
+  background-color: #e63900; /* Красный цвет */
   color: white;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 5px; /* Добавляем отступ справа */
 }
 
-.App-link {
-  color: #61dafb;
+#kustuta:hover {
+  background-color: white;
+  color: #e63900;
+  border: 1px solid #e63900;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#login {
+  background-color: #0073e6; /* Синий цвет */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+  border-radius: 5px;
+}
+
+#login:hover {
+  background-color: white;
+  color: #0073e6;
+  border: 1px solid #0073e6;
+}
+#lisa {
+  background-color: #77b300;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+  border-radius: 5px;
+}
+
+#lisa:hover {
+  background-color: white;
+  color: #77b300;
+  border: 1px solid #77b300;
 }
